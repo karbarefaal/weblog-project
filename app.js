@@ -1,19 +1,44 @@
-const path = require('path');
+const path = require("path");
 
-const express = require('express');
+const express = require("express");
+const expressLayout = require("express-ejs-layouts");
+const dotEnv = require("dotenv");
+const morgan = require("morgan");
 
-const indexRoutes = require('./routes');
+const connectDB = require("./config/db");
+const blogRoutes = require("./routes/blog");
+const dashRoutes = require('./routes/dashboard');
+
+//* Load Config
+dotEnv.config({ path: "./config/config.env" });
+
+//* Database connection
+connectDB();
 
 const app = express();
 
+//* Logging
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"));
+}
+
 //* View Engine
-app.set("view engine","ejs");
-app.set("views","views");
+app.use(expressLayout);
+app.set("view engine", "ejs");
+app.set("layout", "./layouts/mainLayout");
+app.set("views", path.join(__dirname,"views"));
 
 //* Static Folder
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 //* Routes
-app.use(indexRoutes);
+app.use("/dashboard", dashRoutes);
+app.use(blogRoutes);
 
-app.listen(3000,() => console.log(`Server running on port 3000`))
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () =>
+    console.log(
+        `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
+    )
+);
