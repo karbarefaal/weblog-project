@@ -6,8 +6,6 @@ const dotEnv = require("dotenv");
 const morgan = require("morgan");
 
 const connectDB = require("./config/db");
-const blogRoutes = require("./routes/blog");
-const dashRoutes = require('./routes/dashboard');
 
 //* Load Config
 dotEnv.config({ path: "./config/config.env" });
@@ -28,12 +26,16 @@ app.set("view engine", "ejs");
 app.set("layout", "./layouts/mainLayout");
 app.set("views", path.join(__dirname,"views"));
 
+//* Body Parser
+app.use(express.urlencoded({extended: false}));
+
 //* Static Folder
 app.use(express.static(path.join(__dirname, "public")));
 
 //* Routes
-app.use("/dashboard", dashRoutes);
-app.use(blogRoutes);
+app.use("/",require("./routes/blog"));
+app.use("/users", require("./routes/users"));
+app.use("/dashboard", require("./routes/dashboard"));
 
 const PORT = process.env.PORT || 3000;
 

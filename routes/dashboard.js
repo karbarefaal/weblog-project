@@ -13,7 +13,7 @@ router.get("/",(req,res) =>{
 });
 
 // @desc Login Page
-// @route GET /dashboard
+// @route GET /dashboard/login
 router.get("/login",(req,res) =>{
     res.render("login" , {
         pageTitle: "ورود به بخش مدیریت",
