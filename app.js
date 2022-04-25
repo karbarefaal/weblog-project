@@ -1,12 +1,14 @@
 const path = require("path");
 
 const express = require("express");
+const mongoose = require('mongoose');
 const expressLayout = require("express-ejs-layouts");
 const passport = require('passport');
 const dotEnv = require("dotenv");
 const morgan = require("morgan");
 const flash = require('connect-flash');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const connectDB = require("./config/db");
 
@@ -38,9 +40,10 @@ app.use(express.urlencoded({ extended: false }));
 //* Session
 app.use(session({
     secret: "secret",
-    cookie: { maxAge: 60000 },
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection })
     })
 );
 

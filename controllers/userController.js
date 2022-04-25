@@ -14,10 +14,19 @@ exports.login = (req, res) => {
 
 exports.handleLogin = (req,res,next) => {
     passport.authenticate("local", {
-        successRedirect: "/dashboard",
+        //successRedirect: "/dashboard",
         failureRedirect: "/user/login",
         failureFlash: true // or you can send special text message 
     })(req,res,next);
+}
+
+exports.rememberMe = (req,res) => {
+    if(req.body.remember){
+        req.session.cookie.originalMaxAge = 24 * 60 * 60 * 1000; // 1 day or 24 hours
+    }else{
+        req.session.cookie.expire = null;
+    }
+    res.redirect("/dashboard");
 }
 
 exports.logout = (req,res) => {
