@@ -1,28 +1,36 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
-    fullname:{
+const { schema} = require('./secure/userValidation');
+
+const userSchema = new mongoose.Schema({
+    fullname: {
         type: String,
-        required: true,
-        trim: true // delete spaces
+        required: [true, "نام و نام خانوادگی الزامی می باشد"],
+        trim: true,
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
-    password:{
+    password: {
         type: String,
         required: true,
         minlength: 4,
-        maxlength: 255
+        maxlength: 255,
     },
-    createdAt:{
+    createdAt: {
         type: Date,
-        default: Date.now
-    }
+        default: Date.now,
+    },
 });
 
-const User = mongoose.model("User",UserSchema);
+
+
+userSchema.statics.userValidation = function (body) {
+    return schema.validate(body, { abortEarly: false });
+};
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

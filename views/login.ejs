@@ -1,5 +1,6 @@
 <form class="form-signin" action="/users/login" method="POST">
     <h1 class="h3 mb-3 fw-normal">ورود به بخش مدیریت</h1>
+    <%- include("./includes/loginMessages.ejs") %>
     <label for="inputEmail" class="sr-only">آدرس ایمیل</label>
     <input 
         id="inputEmail"    
@@ -14,7 +15,7 @@
         id="inputPassword"    
         type="password" 
         name="password"
-        class="form-control" 
+        class="form-control m-2" 
         placeholder="کلمه عبور"
         required
     >
