@@ -1,5 +1,5 @@
-const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const fetch = require('node-fetch');
 
 const User = require("../models/User");
 
@@ -12,13 +12,37 @@ exports.login = (req, res) => {
     });
 };
 
-exports.handleLogin = (req,res,next) => {
-    passport.authenticate("local", {
-        //successRedirect: "/dashboard",
-        failureRedirect: "/user/login",
-        failureFlash: true // or you can send special text message 
-    })(req,res,next);
-}
+exports.handleLogin =async (req,res,next) => {
+    if(!req.body["g-recaptcha-response"]){
+        req.flash('error','اعتبارسنجی captcha الزامی می باشد');
+        return res.redirect("/users/login");
+    }
+
+    const secretKey = process.env.CAPTCHA_SECRET;
+    const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${req.body["g-recaptcha-response"]}
+    &remoteip=${req.connection.remoteAddress}`;
+
+    const response = await fetch(verifyUrl, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-type": "application/x-www-form-urlencoded; charset=utf-8"
+        }
+    });
+
+    const json = await response.json();
+
+    if(json.success){
+        passport.authenticate("local", {
+            failureRedirect: "/user/login",
+            failureFlash: true // or you can send special text message 
+        })(req,res,next);
+    }else{
+        req.flash("error","مشکلی در اعتبارسنجی captcha موجود می باشد");
+        res.redirect("/users/login");
+    }
+    }
+
 
 exports.rememberMe = (req,res) => {
     if(req.body.remember){
@@ -58,8 +82,9 @@ exports.createUser = async (req, res) => {
             });
         }
 
-        const hash = await bcrypt.hash(password,10);
-        await User.create({fullname,email,password: hash});
+        // const hash = await bcrypt.hash(password,10);
+        // await User.create({fullname,email,password: hash});
+        await User.create({fullname,email,password});
         req.flash("seccess_msg", "ثبت نام موفقیت آمیز بود");
         res.redirect("/users/login");
     } catch (err) {
