@@ -2,6 +2,7 @@ const passport = require('passport');
 const fetch = require('node-fetch');
 
 const User = require("../models/User");
+const { sendEmail } = require('../utils/mailer');
 
 exports.login = (req, res) => {
     res.render("login", { 
@@ -83,9 +84,15 @@ exports.createUser = async (req, res) => {
             });
         }
 
-        // const hash = await bcrypt.hash(password,10);
-        // await User.create({fullname,email,password: hash});
         await User.create({fullname,email,password});
+
+        //? Send Welcome Email
+        sendEmail(
+            email,
+            fullname,'خوش آمدید به وبلاگ ما',
+            'خیلی خوشحالیم که به جمع ما زبان آموزان ملحق شدی'
+            );
+            
         req.flash("seccess_msg", "ثبت نام موفقیت آمیز بود");
         res.redirect("/users/login");
     } catch (err) {
