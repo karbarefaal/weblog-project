@@ -38,21 +38,22 @@ exports.getIndex = async (req, res) => {
     }
 };
 
-exports.getSinglePost = async (req,res) => {
+exports.getSinglePost = async (req, res) => {
     try {
-        const post = await Blog.findOne({_id: req.params.id}).populate("user");
+        const post = await Blog.findOne({ _id: req.params.id }).populate(
+            "user"
+        );
 
-        if(!post)
-            return res.redirect("errors/404");
+        if (!post) return res.redirect("errors/404");
 
-        res.render("post",{
+        res.render("post", {
             pageTitle: post.title,
             path: "/post",
             post,
-            formatDate
-        })
+            formatDate,
+        });
     } catch (err) {
         console.log(err);
         res.render("errors/500");
     }
-}
+};
