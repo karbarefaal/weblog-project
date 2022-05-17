@@ -15,14 +15,16 @@ exports.login = (req, res) => {
 };
 
 exports.handleLogin = async (req, res, next) => {
-    if (!req.body["g-recaptcha-response"]) {
+    const recaptchaRes = req.body["g-recaptcha-response"];
+    if (!recaptchaRes) {
         req.flash("error", "اعتبار سنجی captcha الزامی می باشد");
         return res.redirect("/users/login");
     }
     const secretKey = process.env.CAPTCHA_SECRET;
-    console.log(secretKey);
-    const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${req.body["g-recaptcha-response"]}&remoteip=${req.connection.remoteAddress}`;
-    console.log(verifyUrl);
+    
+    const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${req.body["g-recaptcha-response"]}
+    &remoteip=${req.socket.remoteAddress}`; // req.connection.remoteAdderss is depricated
+    
     const response = await fetch(verifyUrl, {
         method: "POST",
         headers: {
