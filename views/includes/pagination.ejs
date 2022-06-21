@@ -1,0 +1,35 @@
+<nav>
+  <ul class="pagination justify-content-center">
+    <% if (lang){ %>
+      <% if(currentPage !== 1 && previousPage !== 1) {%>
+           <li class="page-item"><a class="page-link" href="?lang=<%=lang%>&page=1">1</a></li>
+       <% } %>
+       <%if(hasPreviousPage) { %> 
+           <li class="page-item"><a class="page-link" href="?lang=<%=lang%>&page=<%= previousPage %>"><%= previousPage %></a></li>
+       <% } %>
+       <li class="page-item active"><a class="page-link" href="?lang=<%=lang%>&page=<%= currentPage %>"><%= currentPage %></a></li>
+       <% if(hasNextPage) {%>
+           <li class="page-item"><a class="page-link" href="?lang=<%=lang%>&page=<%= nextPage %>"><%= nextPage %></a></li>
+       <% } %>
+       <% if(lastPage !== currentPage && nextPage !== lastPage) {%>
+           <li class="page-item"><a class="page-link" href="?lang=<%=lang%>&page=<%= lastPage %>"><%= lastPage %></a></li>
+       <% } %>
+    <% } else{ %>
+       <% if(currentPage !== 1 && previousPage !== 1) {%>
+           <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+       <% } %>
+       <%if(hasPreviousPage) { %> 
+           <li class="page-item"><a class="page-link" href=""><%= previousPage %></a></li>
+       <% } %>
+       <li class="page-item active"><a class="page-link" href="?page=<%= currentPage %>"><%= currentPage %></a></li>
+       <% if(hasNextPage) {%>
+           <li class="page-item"><a class="page-link" href="?page=<%= nextPage %>"><%= nextPage %></a></li>
+       <% } %>
+       <% if(lastPage !== currentPage && nextPage !== lastPage) {%>
+           <li class="page-item"><a class="page-link" href="?page=<%= lastPage %>"><%= lastPage %></a></li>
+       <% } %>
+   <% } %>
+  </ul>
+</nav>
+
+
